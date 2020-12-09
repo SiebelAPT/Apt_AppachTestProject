@@ -1,0 +1,18 @@
+[
+    {
+        "id": "a3b5b097-77d9-4292-8524-52b22f108e52",
+        "firstname": "Johnathon",
+        "lastname": "Smith",
+        "email": "john@appech.com",
+        "role": "admin",
+        "avtar": "#4E7FFE"
+    },
+    {
+        "id": "f22f033e-1841-4c88-8f34-fa259e276688",
+        "firstname": "Rebekah",
+        "lastname": "Smith",
+        "email": "rebekah@appech.com",
+        "role": "admin",
+        "avtar": "#FEB84E"
+    }
+]

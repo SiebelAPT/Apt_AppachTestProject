@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>c61517ed-92fb-4197-9e22-834d175a369f</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="10.0.0" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
+    </ItemGroup>
+
+
+</Project>

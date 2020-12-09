@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30223.230
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClient", "WebClient\WebClient.csproj", "{B2AB9A1C-C1C8-4398-900C-1562C82EED34}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{CE455195-D135-48BC-B460-86643D782736}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{DE42123E-58EF-49D0-AEB8-7800E25C5905}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{23479383-AD66-4489-82BC-5C65950E6E26}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{A81F92CE-4FAD-402B-A704-6A7317B5FB3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{65360535-AD99-45ED-9300-75E36DC19A3F}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Sql", "Sql\Sql.sqlproj", "{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2AB9A1C-C1C8-4398-900C-1562C82EED34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2AB9A1C-C1C8-4398-900C-1562C82EED34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2AB9A1C-C1C8-4398-900C-1562C82EED34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2AB9A1C-C1C8-4398-900C-1562C82EED34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE455195-D135-48BC-B460-86643D782736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE455195-D135-48BC-B460-86643D782736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE455195-D135-48BC-B460-86643D782736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE455195-D135-48BC-B460-86643D782736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE42123E-58EF-49D0-AEB8-7800E25C5905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE42123E-58EF-49D0-AEB8-7800E25C5905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE42123E-58EF-49D0-AEB8-7800E25C5905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE42123E-58EF-49D0-AEB8-7800E25C5905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23479383-AD66-4489-82BC-5C65950E6E26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23479383-AD66-4489-82BC-5C65950E6E26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23479383-AD66-4489-82BC-5C65950E6E26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23479383-AD66-4489-82BC-5C65950E6E26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A81F92CE-4FAD-402B-A704-6A7317B5FB3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A81F92CE-4FAD-402B-A704-6A7317B5FB3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A81F92CE-4FAD-402B-A704-6A7317B5FB3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A81F92CE-4FAD-402B-A704-6A7317B5FB3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65360535-AD99-45ED-9300-75E36DC19A3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65360535-AD99-45ED-9300-75E36DC19A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65360535-AD99-45ED-9300-75E36DC19A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65360535-AD99-45ED-9300-75E36DC19A3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29D99FD9-B893-4F15-BCD5-7915D897D507}
+	EndGlobalSection
+EndGlobal

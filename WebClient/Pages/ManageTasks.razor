@@ -1,0 +1,102 @@
+@page "/managetasks"
+@inherits TasksBase
+@using Domain.ViewModel
+@using WebClient.Abstractions
+@using WebClient.Shared.Models
+@using WebClient.Components
+@using WebClient.Shared.Components
+
+@*@inject IMemberDataService memberService;
+@inject ITaskDataService taskDataService;*@
+
+@if (isLoaded)
+{
+    <div class="page-wrapper row m-0 col-12 p-0">
+        <div class="col-4 p-0">
+            <LeftMenu />
+        </div>
+
+        <div class="col-8 p-0">
+            @if (showTasks)
+            {
+                <div class="col-10 offset-1 pt-5">
+                    <div class="row m-0">
+                        <Field class="col-9 p-0 custom-input">
+                            <TextEdit Placeholder="Enter New Task" @bind-text="@newTask" />
+                        </Field>
+                        <div class="col-3 p-0 text-right">
+                            <Button class="add-btn px-4" @onclick="@OnAddTask">Add</Button>
+                        </div>
+                    </div>
+                    <div class="col-12 p-0 align-items-center">
+                        <TaskCreatorListerComponent ></TaskCreatorListerComponent>
+                    </div>
+                </div>
+            }
+            @if (false)
+            {
+                <div class="col-10 offset-1 pt-5">
+                </div>
+            }
+            @*@if (showLister)
+            {
+                <div class="col-10 offset-1 ">
+                    <TaskListerComponent></TaskListerComponent>
+                </div>
+            }
+            @if (false)
+            {
+                <div class="col-10 offset-1 pt-5">
+                </div>
+            }*@            
+        </div>
+    </div>
+}
+
+
+@code
+{
+    //public TaskToDo[] paramTaskToDo { get; set; }
+
+    public List<MemberVm> members;
+    public string newTask;
+    public bool isTaskListerShow { get; set; }
+    private TaskVm taskModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isShowAllButton = true;
+        taskModel = taskDataService.SelectedTask ?? new TaskVm();
+        taskDataService.SelectedTaskChanged += TaskDataServiceOnSeletedTaskChanged;
+
+        await taskDataService.GetTasks();
+        //return base.OnInitializedAsync();
+    }
+
+    private void TaskDataServiceOnSeletedTaskChanged(object sender, EventArgs e)
+    {
+        taskModel = taskDataService.SelectedTask ?? new TaskVm();
+        StateHasChanged();
+    }
+
+    private void OnAddTask()
+    {
+        if (taskModel == null) taskModel = new TaskVm();
+
+        taskModel.Id = Guid.NewGuid();
+        taskModel.Subject = newTask;
+        taskModel.IsComplete = false;
+        if (memberService.SelectedMember != null)
+        {
+            taskModel.AssignedToId = memberService.SelectedMember.Id;
+        }
+        else
+            taskModel.AssignedToId = Guid.Empty;
+
+        newTask = string.Empty;
+
+        //taskDataService.AddTask(taskModel);
+        taskDataService.CreateTask(taskModel);
+        StateHasChanged();
+    }    
+}

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+
+<div class="main">
+    <div class="top-row row m-0 col-12 px-4">
+        <div class="col-6 p-0">
+            <img class="logo" src="/assets/images/logo.svg"/>
+        </div>
+        <div class="col-6 p-0 d-flex justify-content-end">
+            <Link class="label custom-btn py-2 px-5 mx-2 py-sm-1 px-sm-3" To="members"> Members </Link>
+            <Link class="label custom-btn py-2 px-5 mx-2 py-sm-1 px-sm-3" To="tasktodo"> Manage Tasks </Link>
+        </div>
+    </div>
+
+    <div class="content">
+        @Body
+    </div>
+</div>

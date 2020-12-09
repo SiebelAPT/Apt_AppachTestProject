@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Member]
+(
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, 
+    [FirstName] VARCHAR(100) NOT NULL, 
+    [LastName] VARCHAR(100) NOT NULL, 
+    [Email] VARCHAR(200) NOT NULL, 
+    [Roles] VARCHAR(500) NULL, 
+    [Avatar] VARCHAR(200) NULL
+)

@@ -1,0 +1,101 @@
+@inherits LeftMenuBase
+@*@using Core.Extensions.ModelConversion*@
+
+@namespace WebClient.Shared.Components
+
+<style>
+    .menu-wrapper {
+        background: #FBFBFB;
+        box-shadow: 2px 0px 4px 2px rgba(0, 0, 0, 0.12);
+        overflow-y: auto;
+        height: 100%;
+    }
+
+        .menu-wrapper .menu-item {
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border: 3px solid #FFFFFF;
+        }
+
+            .menu-wrapper .menu-item.active {
+                border: 3px solid #CC1778;
+            }
+
+        .menu-wrapper .add-menu-item {
+            border: 1px dashed #000000;
+            box-sizing: border-box;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.12));
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .add-menu-item .fa {
+        font-size: 12px;
+    }
+
+    .menu-wrapper .label {
+        color: #000000;
+        font-family: "Poppins Regular";
+        font-size: 24px;
+        line-height: 36px;
+    }
+
+    .menu-wrapper .avtar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+    }
+
+    @@media(max-width: 1400px) {
+        .menu-wrapper .label {
+            font-size: 16px;
+            line-height: 24px;
+        }
+
+        .menu-wrapper .avtar {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    @@media(max-width: 767.98px) {
+        .menu-wrapper .avtar {
+            width: 16px;
+            height: 16px;
+        }
+    }
+</style>
+
+<div class="menu-wrapper col-12 p-0">
+    @if (showAllTaskButton)
+    {
+        <div class="menu-item label col-10 offset-1 p-3 my-4 p-sm-2" @onclick="@(e => ShowAllTaskClicked(e))">
+            <span class="fa fa-plus"></span> &nbsp; All Tasks
+        </div>
+    }
+
+    @if (menuItems != null && menuItems.Length > 0)
+    {
+        @foreach (var item in menuItems)
+        {
+            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
+                @if (item.iconColor != null)
+                {
+                    <div class="avtar mr-3" style="background-color: @(item.iconColor);"> </div>
+                }
+                <div class="label"> @item.label </div>
+            </div>
+        }
+    }
+
+    <div class="add-menu-item label col-10 offset-1 p-3 my-4 p-sm-2" @onclick="@OnAddItem">
+        <span class="fa fa-plus"></span> &nbsp; Add Member
+    </div>
+</div>

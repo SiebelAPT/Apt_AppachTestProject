@@ -1,0 +1,43 @@
+@page "/tasktodo"
+@inherits TasksBase
+
+@namespace WebClient.Pages
+
+@using WebClient.Components
+@using WebClient.Shared.Components
+
+<style>
+    .page-wrapper .header {
+        color: #000000;
+        font-size: 32px;
+        line-height: 45px;
+        font-family: "Poppins SemiBold";
+    }
+</style>
+@if (isLoaded)
+{    
+<div class="page-wrapper row m-0 col-12 p-0">
+    <div class="col-4 p-0">
+        <LeftMenu showAllTaskButton="isShowAllButton" OnShowAllTaskClicked="LeftMenuAllTaskButtonClicked"></LeftMenu>
+    </div>
+    <div class="col-8 p-0">
+        <div class="col-10 header pb-1 d-flex justify-content-center"> Manage Family Tasks </div>
+        <div class="col-10 offset-1 pt-1">
+            <div class="row m-0">
+                <Field class="col-9 p-0 custom-input">
+                    <TextEdit Placeholder="Enter New Task" @bind-text="@newTask" />
+                </Field>
+                <div class="col-3 p-0 text-right">
+                    <Button class="add-btn px-4" @onclick="@OnAddTask">Add</Button>
+                </div>
+            </div>
+        </div>
+        <div class="col-10 offset-1 align-items-center">
+            @if (paramTasksToDo != null)
+            {
+                <TaskCreatorListerComponent paramFamilyTaskToDo="paramTasksToDo"></TaskCreatorListerComponent>
+            }
+        </div>
+    </div>
+</div>
+}

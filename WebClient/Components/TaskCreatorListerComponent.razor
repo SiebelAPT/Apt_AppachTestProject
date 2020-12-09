@@ -1,0 +1,190 @@
+@using WebClient.Abstractions
+@using WebClient.Shared.Models
+@using Domain.ViewModel
+
+@inject ITaskDataService taskDataService;
+@inject IMemberDataService memberDataService;
+
+@namespace WebClient.Components
+
+<style>
+    .task-wrapper .header {
+        color: #000000;
+        font-size: 32px;
+        line-height: 48px;
+        font-family: "Poppins SemiBold";
+    }
+    .task-wrapper .task-item {
+        background: #FFFFFF;
+        border: 1px solid #C5C9C9;
+        box-sizing: border-box;
+        border-radius: 8px;
+        font-size: 24px;
+        font-family: "Poppins Light";
+    }
+
+    .done-text {
+        text-decoration: line-through;
+    }
+
+    .task-wrapper .avtar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+    }
+
+    @@media(max-width: 1400px) {
+        .task-wrapper .task-item {
+            font-size: 16px;
+        }
+
+        .task-wrapper .avtar {
+            width: 24px;
+            height: 24px;
+        }
+
+        .delete-icon {
+            width: 25px;
+        }
+    }
+
+    @@media(max-width: 767.98px) {
+        .task-wrapper .avtar {
+            width: 16px;
+            height: 16px;
+        }
+    }
+</style>    
+
+<div class="task-wrapper">
+    @if (paramFamilyTaskToDo != null && paramFamilyTaskToDo.Length > 0 && !haltTaskRefresh)
+    {
+        @foreach (var item in paramFamilyTaskToDo)
+        {
+            <div class="task-item p-3 my-3 row m-0">
+                <div class="col-10 p-0">
+                    @if (item.Id != Guid.Empty)
+                    {
+                        <Check TValue="bool" Checked="@item.IsComplete" CheckedChanged="@(val => ToggleTask(item))">
+                            <span class="@(item.IsComplete ? "done-text" : "")">@item.Subject</span>
+                        </Check>
+                    }
+                    else
+                    {
+                        <span class="@(item.IsComplete ? "done-text" : "")" style="color: @alertAvatar;">@item.Subject</span>
+                    }
+                </div>
+                <div class="col-2 p-0 d-flex d-flex justify-content-end align-items-center">
+                    <div class="avtar mr-1" style="background-color: @item.Avatar;"></div>
+                    @if (item.Id != Guid.Empty)
+                    {
+                        <img class="delete-icon" src="/assets/images/delete-icon.svg" />
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        @if (!haltTaskRefresh)
+        {
+            <div class="task-item p-3 my-3 row m-0">
+                <div class="col-10 p-0">
+                    <span class="@(false ? "done-text" : "")" style="color:red;">@noTaskFound</span>
+                </div>
+                <div class="col-2 p-0 d-flex d-flex justify-content-end align-items-center">
+                    <div class="avtar mr-1" style="background-color:red;"></div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code  {
+
+    #region Declare Parameters and Variables
+
+    [Parameter]
+    public TaskToDoModel[] paramFamilyTaskToDo { get; set; }
+
+    private const string noAssociatedTaskText = "No task found associated with the selected member";
+    private const string noTaskFound = "No task were Found";
+    private const string alertAvatar = "Red";
+    private TaskVm taskModel;
+    private bool isFirstRender;
+
+    private bool haltTaskRefresh;
+
+    #endregion
+
+    protected override Task OnInitializedAsync()
+    {
+        haltTaskRefresh = false;
+        //taskModel = taskDataService.SelectedTask ?? new TaskVm();
+
+        memberDataService.SelectedMemberChanged += MemberService_SelectedMemberChanged;
+        taskDataService.TasksChanged += TaskDataService_TasksChanged;
+
+        paramFamilyTaskToDo = taskDataService.PopulateLoadedTasks(taskDataService.EnumTasksToDo.ToList(), memberDataService.SelectedMember, memberDataService);
+
+        return base.OnInitializedAsync();
+    }
+
+    #region Event Handlers  
+
+    private void MemberService_SelectedMemberChanged(object sender, EventArgs e)
+    {
+        haltTaskRefresh = false;
+        if (memberDataService.SelectedMember != null) LoadMemberWiseTasks(memberDataService.SelectedMember);
+    }
+
+    private void TaskDataService_TasksChanged(object sender, EventArgs e)
+    {
+        haltTaskRefresh = false;
+        if (!isFirstRender) paramFamilyTaskToDo = taskDataService.PopulateLoadedTasks(taskDataService.EnumTasksToDo.ToList(), memberDataService.SelectedMember, memberDataService);
+    }
+
+    private void TaskDataService_SeletedTaskChanged(object sender, EventArgs e)
+    {
+        haltTaskRefresh = false;
+        StateHasChanged();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void ToggleTask(TaskToDoModel model)
+    {
+        taskDataService.ToggleTask(model.Id);
+        StateHasChanged();
+    }
+
+    private void LoadMemberWiseTasks(MemberVm selectedMember)
+    {
+        if (taskDataService.EnumTasksToDo.Count() > 0)
+        {
+            List<TaskVm> lstMemberTask = taskDataService.EnumTasksToDo.Where(t => t.AssignedToId == selectedMember.Id).ToList();
+
+            if (lstMemberTask.Count > 0)
+            {
+                paramFamilyTaskToDo = taskDataService.PopulateLoadedTasks(lstMemberTask, selectedMember, memberDataService);
+                StateHasChanged();
+            }
+            else
+            {
+                TaskToDoModel noTask = new TaskToDoModel();
+                noTask.Id = Guid.Empty;
+                noTask.Subject = noAssociatedTaskText;
+                noTask.Avatar = (selectedMember != null) ? selectedMember.Avatar : alertAvatar;
+                noTask.IsComplete = false;
+
+                paramFamilyTaskToDo = new TaskToDoModel[1] { noTask };
+            }
+            StateHasChanged();
+        }
+    }
+
+    #endregion
+
+}

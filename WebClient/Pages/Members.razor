@@ -1,0 +1,24 @@
+@page "/members"
+@inherits MembersBase
+
+@namespace WebClient.Pages
+
+@using WebClient.Components
+@using WebClient.Shared.Components
+
+@if (isLoaded)
+{
+    <div class="page-wrapper row m-0 col-12 p-0">
+        <div class="col-4 p-0">
+            <LeftMenu showAllTaskButton="isShowAlTaskBtn" />
+        </div>
+        <div class="col-8 p-0">
+            @if (showCreator)
+            {
+                <div class="col-sm-12 col-md-10 offset-md-1 pt-5">
+                    <FamilyMemberCreator isMemCreaterShow="showCreator" ></FamilyMemberCreator>
+                </div>
+            }
+        </div>
+    </div>
+}
