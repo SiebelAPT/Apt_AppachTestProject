@@ -21,7 +21,7 @@ namespace WebClient.Services
 
         private readonly HttpClient httpClient;
         private IEnumerable<TaskVm> tasksToDo;
-        private Boolean memberTaskCompleteValue = true;
+        private bool isOperationSuccessful = false; 
 
         #endregion
 
@@ -38,6 +38,7 @@ namespace WebClient.Services
         public event EventHandler TaskSelected;
         public event EventHandler SelectedTaskChanged;
         public event EventHandler ShowAllTaskClicked;
+        public event EventHandler SaveCompleteTaskClicked;
         public event EventHandler<string> UpdateTaskFailed;
         public event EventHandler<string> CreateTaskFailed;
         public event EventHandler<string> GetTasksFailed;
@@ -80,18 +81,17 @@ namespace WebClient.Services
 
         private async Task<AssignTaskCommandResult> Assign(AssignTaskCommand command)
         {
-            return await httpClient.PutJsonAsync<AssignTaskCommandResult>($"tasktodo/{command.Id}&{command.AssignedToId}", command);
+            return await httpClient.PutJsonAsync<AssignTaskCommandResult>($"tasktodo/{command.Id}/{command.AssignedToId}", command);       //$"tasktodo/{command.Id}&{command.AssignedToId}"
         }
 
         private async Task<CompleteTaskCommandResult> Complete(CompleteTaskCommand command)
         {
-            return await httpClient.PutJsonAsync<CompleteTaskCommandResult>($"tasktodo/{command.Id}&{"true"}", command);
+            return await httpClient.PutJsonAsync<CompleteTaskCommandResult>($"tasktodo/{command.Id}/{command.IsComplete}", command);
         }
 
         private async Task<CompleteMemberTaskCommandResult> CompleteMemTask(CompleteMemberTaskCommand command)
         {
-            memberTaskCompleteValue = true;
-            return await httpClient.PutJsonAsync<CompleteMemberTaskCommandResult>($"tasktodo/{command.Id}&{memberTaskCompleteValue}&{command.AssignedToId}", command);
+            return await httpClient.PutJsonAsync<CompleteMemberTaskCommandResult>($"tasktodo/{command.Id}/{command.IsComplete}/{command.AssignedToId}", command);
         }        
 
         #endregion
@@ -114,6 +114,7 @@ namespace WebClient.Services
                 if (taskToDo.Id == id)
                 {
                     taskToDo.IsComplete = !taskToDo.IsComplete;
+                    SelectedTask = tasksToDo.SingleOrDefault(taskVm => taskVm.Id == id);
                 }
             }
 
@@ -126,8 +127,10 @@ namespace WebClient.Services
             TasksChanged?.Invoke(this, null);
         }
 
-        public async Task CreateTask(TaskVm model)
+        public async Task<bool> CreateTask(TaskVm model)
         {
+            isOperationSuccessful = false;
+
             var result = await Create(model.ToCreateTaskCommand());
 
             if (result != null)
@@ -136,19 +139,24 @@ namespace WebClient.Services
 
                 if (updatedTasks != null)
                 {
+                    isOperationSuccessful = true;
                     tasksToDo = updatedTasks;
                     TasksChanged?.Invoke(this, null);
-                    return;
+                    return isOperationSuccessful;
                 }
                 
                 UpdateTaskFailed?.Invoke(this, "The creation was successful, but we can no longer get an updated list of tasks from the server.");
+                return isOperationSuccessful;
             }
 
             UpdateTaskFailed?.Invoke(this, "Unable to create record.");
+            return isOperationSuccessful;
         }
         
-        public async Task UpdateTask(TaskVm model)
+        public async Task<bool> UpdateTask(TaskVm model)
         {
+            isOperationSuccessful = false;
+
             var result = await Update(model.ToUpdateTaskCommand());
 
             Console.WriteLine(JsonSerializer.Serialize(result));
@@ -161,19 +169,21 @@ namespace WebClient.Services
                 {
                     tasksToDo = updatedTasks;
                     TasksChanged?.Invoke(this, null);
-                    return;
+                    isOperationSuccessful = true;
+                    return isOperationSuccessful;
                 }
                 
                 UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of tasks from the server.");
+                return isOperationSuccessful;
             }
             
             UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
+            return isOperationSuccessful;
         }
 
-        public async Task AssignTask(Guid id, Guid assignToMemberId, TaskVm model)
+        public async Task<bool> AssignTask(TaskVm model)
         {
-            model.Id = id;
-            model.AssignedToId = assignToMemberId;
+            isOperationSuccessful = false;
 
             var result = await Assign(model.ToAssignTaskCommand());
 
@@ -183,21 +193,23 @@ namespace WebClient.Services
 
                 if (updatedTasks != null)
                 {
+                    isOperationSuccessful = true;
                     tasksToDo = updatedTasks;
-                    TasksChanged?.Invoke(this, null);
-                    return;
+                    TasksChanged?.Invoke(this, null);                    
+                    return isOperationSuccessful;
                 }
                 
                 UpdateTaskFailed?.Invoke(this, "The task assignment was successful, but we can no longer get an updated list of member wise tasks from the server.");
+                return isOperationSuccessful;
             }
             
             UpdateTaskFailed?.Invoke(this, "Unable to assign task(s).");
+            return isOperationSuccessful;
         }
 
-        public async Task CompleteTask(Guid id, bool isComplete, TaskVm model)
+        public async Task<bool> CompleteTask(TaskVm model)
         {
-            model.Id = id;
-            model.IsComplete = isComplete;
+            isOperationSuccessful = false;
 
             var result = await Complete(model.ToCompleteTaskCommand());
 
@@ -209,22 +221,23 @@ namespace WebClient.Services
 
                 if (updatedTasks != null)
                 {
+                    isOperationSuccessful = true;
                     tasksToDo = updatedTasks;
                     TasksChanged?.Invoke(this, null);
-                    return;
+                    return isOperationSuccessful;
                 }
                 
                 UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of tasks from the server.");
+                return isOperationSuccessful;
             }
             
             UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
+            return isOperationSuccessful;
         }
 
-        public async Task CompleteMemberTask(Guid id, bool isComplete, Guid assignToMemberId, TaskVm model)
+        public async Task<bool> CompleteMemberTask(TaskVm model)
         {
-            model.Id = id;
-            model.IsComplete = isComplete;
-            model.AssignedToId = assignToMemberId;
+            isOperationSuccessful = false;
 
             var result = await CompleteMemTask(model.ToCompleteMemberTaskCommand());
 
@@ -236,15 +249,18 @@ namespace WebClient.Services
 
                 if (updatedTasks != null)
                 {
+                    isOperationSuccessful = true;
                     tasksToDo = updatedTasks;
                     TasksChanged?.Invoke(this, null);
-                    return;
+                    return isOperationSuccessful;
                 }
                 
                 UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of tasks from the server.");
+                return isOperationSuccessful;
             }
             
             UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
+            return isOperationSuccessful;
         }
 
         public async Task GetTasks()

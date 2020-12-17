@@ -33,9 +33,9 @@
             </div>
         </div>
         <div class="col-10 offset-1 align-items-center">
-            @if (paramTasksToDo != null)
+            @if (familyTasksToDo != null)
             {
-                <TaskCreatorListerComponent paramFamilyTaskToDo="paramTasksToDo"></TaskCreatorListerComponent>
+                <TaskCreatorListerComponent paramFamilyTaskToDo="familyTasksToDo" OnSaveCompleteTaskClicked="SaveCompleteTask"></TaskCreatorListerComponent>
             }
         </div>
     </div>

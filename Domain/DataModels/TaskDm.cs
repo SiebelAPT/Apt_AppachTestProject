@@ -8,7 +8,7 @@ namespace Domain.DataModels
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Subject { get; set; }
-        public Boolean IsComplete { get; set; }
+        public bool IsComplete { get; set; }
         public Guid AssignedToId { get; set; }        
     }
 }

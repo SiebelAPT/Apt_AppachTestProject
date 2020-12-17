@@ -18,6 +18,7 @@ namespace WebClient.Abstractions
         event EventHandler TaskSelected;
         event EventHandler SelectedTaskChanged;
         event EventHandler ShowAllTaskClicked;
+        event EventHandler SaveCompleteTaskClicked;
         event EventHandler<string> UpdateTaskFailed;
         event EventHandler<string> CreateTaskFailed;
         event EventHandler<string> GetTasksFailed;
@@ -25,11 +26,11 @@ namespace WebClient.Abstractions
         void SelectTask(Guid id);
         void ToggleTask(Guid id);
         void AddTask(TaskVm model);
-        Task CreateTask(TaskVm model);
-        Task UpdateTask(TaskVm model);
-        Task AssignTask(Guid id, Guid assignToMemberId, TaskVm model);
-        Task CompleteTask(Guid id, bool isComplete, TaskVm model);
-        Task CompleteMemberTask(Guid id, bool isComplete, Guid assignToMemberId, TaskVm model);
+        Task<bool> CreateTask(TaskVm model);
+        Task<bool> UpdateTask(TaskVm model);
+        Task<bool> AssignTask(TaskVm model);
+        Task<bool> CompleteTask(TaskVm model);
+        Task<bool> CompleteMemberTask(TaskVm model);
         Task GetTasks();
         TaskToDoModel[] PopulateLoadedTasks(List<TaskVm> loadedTasks, MemberVm selectedMember, IMemberDataService loadedMembers);
         void SelectNullTask();

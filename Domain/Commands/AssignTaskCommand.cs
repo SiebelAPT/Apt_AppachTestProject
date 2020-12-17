@@ -6,7 +6,32 @@ namespace Domain.Commands
 {
     public class AssignTaskCommand
     {
-        public Guid Id { get; set; }
-        public Guid AssignedToId { get; set; }
+        Guid _id;
+        Guid _assignTo;
+        
+        public Guid Id
+        {
+            get
+            {
+                return _id;
+            }
+
+            set
+            {
+                _id = value;
+            }
+        }
+        public Guid AssignedToId
+        {
+            get
+            {
+                return _assignTo;
+            }
+
+            set
+            {
+                _assignTo = value;
+            }
+        }
     }
 }

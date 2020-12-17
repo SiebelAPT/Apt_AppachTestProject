@@ -19,8 +19,7 @@ namespace Services
 
         private readonly ITaskRepository _taskRepository;
         private readonly IMapper _taskMapper;
-        private const Boolean taskIsCompleteValue = true;
-
+        
         #endregion
 
         #region Constructor
@@ -69,13 +68,12 @@ namespace Services
         {
             var isSucceed = true;
 
-            var task = await _taskRepository.ByIdAsync(command.Id);
-            task.Id = command.Id;
-            task.AssignedToId = command.AssignedToId;
+            var assigningTask = await _taskRepository.ByIdAsync(command.Id);
+            assigningTask.AssignedToId = command.AssignedToId;
 
-            _taskMapper.Map<AssignTaskCommand, TaskDm>(command, task);
+            //_taskMapper.Map<AssignTaskCommand, TaskDm>(command, assigningTask);
 
-            var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(task);
+            var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(assigningTask);
 
             if (affectedRecordsCount < 1) isSucceed = false;
 
@@ -90,9 +88,9 @@ namespace Services
             var isSucceed = true;
 
             var complettedTask = await _taskRepository.ByIdAsync(command.Id);
-            complettedTask.IsComplete = taskIsCompleteValue;
+            complettedTask.IsComplete = command.IsComplete;
 
-            _taskMapper.Map<CompleteTaskCommand, TaskDm>(command, complettedTask);
+            //_taskMapper.Map<CompleteTaskCommand, TaskDm>(command, complettedTask);
 
             var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(complettedTask);
 
@@ -110,13 +108,12 @@ namespace Services
             var isSucceed = true;
 
             var complettedTask = await _taskRepository.ByIdAsync(command.Id);
-            complettedTask.Id = command.Id;
             complettedTask.AssignedToId = command.AssignedToId;
-            complettedTask.IsComplete = taskIsCompleteValue;
+            complettedTask.IsComplete = command.IsComplete;
 
             //var comlettedTask = await _taskRepository.UpdateAsync(task);
 
-            _taskMapper.Map<CompleteMemberTaskCommand, TaskDm>(command, complettedTask);
+            //_taskMapper.Map<CompleteMemberTaskCommand, TaskDm>(command, complettedTask);
 
             var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(complettedTask);
 

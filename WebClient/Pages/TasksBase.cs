@@ -1,11 +1,12 @@
-﻿using Domain.ViewModel;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Domain.ViewModel;
 using WebClient.Abstractions;
 using WebClient.Shared.Models;
 using WebClient.Components;
@@ -23,8 +24,8 @@ namespace WebClient.Pages
         protected bool isLoaded;
         protected bool isShowAllButton { get; set; } = true;
         protected bool isTaskListerShow { get; set; }
-        protected TaskVm taskModel;
-        protected TaskToDoModel[] paramTasksToDo { get; set; }
+        protected TaskVm taskViewModel;
+        protected TaskToDoModel[] familyTasksToDo { get; set; }
 
         #endregion
 
@@ -36,6 +37,9 @@ namespace WebClient.Pages
         [Parameter]
         public MemberVm SelectedMember { get; set; }
 
+        [Parameter]
+        public TaskVm SelectedTask { get; set; }
+
         [Inject]
         public ITaskDataService taskDataService { get; set; }
 
@@ -46,8 +50,8 @@ namespace WebClient.Pages
 
         protected override Task OnInitializedAsync()
         {
-            paramTasksToDo = new TaskToDoModel[0];
-            taskModel = taskDataService.SelectedTask ?? new TaskVm();
+            familyTasksToDo = new TaskToDoModel[0];
+            taskViewModel = taskDataService.SelectedTask ?? new TaskVm();
 
             UpdateTasks();
             
@@ -65,16 +69,16 @@ namespace WebClient.Pages
 
         protected void TaskDataService_TasksChanged(object sender, EventArgs e)
         {
-            taskModel = taskDataService.SelectedTask ?? new TaskVm();
-            paramTasksToDo = taskDataService.PopulateLoadedTasks(taskDataService.EnumTasksToDo.ToList(), memberDataService.SelectedMember, memberDataService);
-            
-            UpdateTasks();
-                        
             showTasks = true;
             isLoaded = true;
             isShowAllButton = true;
             isTaskListerShow = true;
 
+            taskViewModel = taskDataService.SelectedTask ?? new TaskVm();
+            familyTasksToDo = taskDataService.PopulateLoadedTasks(taskDataService.EnumTasksToDo.ToList(), memberDataService.SelectedMember, memberDataService);
+            
+            UpdateTasks();
+                        
             StateHasChanged();
         }
 
@@ -84,21 +88,21 @@ namespace WebClient.Pages
 
         protected async void OnAddTask()
         {
-            if (taskModel == null) taskModel = new TaskVm();
+            if (taskViewModel == null) taskViewModel = new TaskVm();
 
-            taskModel.Id = Guid.NewGuid();
-            taskModel.Subject = newTask;
-            taskModel.IsComplete = false;
+            taskViewModel.Id = Guid.NewGuid();
+            taskViewModel.Subject = newTask;
+            taskViewModel.IsComplete = false;
             if (memberDataService != null && memberDataService.SelectedMember != null && memberDataService.SelectedMember.Id != Guid.Empty)
             {
-                taskModel.AssignedToId = memberDataService.SelectedMember.Id;
+                taskViewModel.AssignedToId = memberDataService.SelectedMember.Id;
             }
             else
-                taskModel.AssignedToId = Guid.Empty;
+                taskViewModel.AssignedToId = Guid.Empty;
 
             newTask = string.Empty;
 
-            await taskDataService.CreateTask(taskModel);            
+            await taskDataService.CreateTask(taskViewModel);            
         }
 
         protected void UpdateTasks()
@@ -115,7 +119,16 @@ namespace WebClient.Pages
         {
             if (LoadedTasks == null || LoadedTasks.Count <= 0) UpdateTasks();
 
-            paramTasksToDo = taskDataService.PopulateLoadedTasks(LoadedTasks, memberDataService.SelectedMember, memberDataService);
+            familyTasksToDo = taskDataService.PopulateLoadedTasks(LoadedTasks, memberDataService.SelectedMember, memberDataService);
+        }
+
+        protected async void SaveCompleteTask()
+        {
+            if (taskDataService == null || taskDataService.SelectedTask == null) return;
+
+            taskViewModel = taskDataService.SelectedTask;            
+
+            await taskDataService.CompleteTask(taskViewModel);            
         }
 
         #endregion

@@ -36,7 +36,7 @@ namespace WebApi.Controllers
             return Created($"/api/tasktodo/{result.Payload.Id}", result);
         }
 
-        [HttpPut("{updatetask}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(UpdateTaskCommandResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(Guid id, UpdateTaskCommand command)
         {
@@ -57,9 +57,10 @@ namespace WebApi.Controllers
             }            
         }
 
-        [HttpPut("{assigntask}")]
+        [HttpPut("{taskId:Guid}/{assignToId:Guid}")]
+        //[Route("AssignTask")]
         [ProducesResponseType(typeof(AssignTaskCommandResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AssignTask(AssignTaskCommand command)
+        public async Task<IActionResult> AssignTask(Guid taskId, Guid assignToId, AssignTaskCommand command)
         {
             if (!ModelState.IsValid)
             {
@@ -78,9 +79,10 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{completetask}")]
+        [HttpPut("{completeTaskId:Guid}/{isComplete:bool}")]
+        //[Route("CompleteTask")]
         [ProducesResponseType(typeof(CompleteTaskCommandResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CompleteTask(CompleteTaskCommand command)
+        public async Task<IActionResult> CompleteTask(Guid completeTaskId, bool isComplete, CompleteTaskCommand command)
         {
             if (!ModelState.IsValid)
             {
@@ -99,9 +101,9 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{cmpletemembertask}")]
+        [HttpPut("{memberTaskId}/{isComplete}/{memberId}")]
         [ProducesResponseType(typeof(CompleteMemberTaskCommandResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CompleteMemberTask(CompleteMemberTaskCommand command)
+        public async Task<IActionResult> CompleteFamMemberTask(Guid memberTaskId, bool isComplete, Guid memberId, CompleteMemberTaskCommand command)
         {
             if (!ModelState.IsValid)
             {
