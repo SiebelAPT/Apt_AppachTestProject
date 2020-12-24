@@ -81,10 +81,10 @@ namespace WebClient.Services
 
         private async Task<AssignTaskCommandResult> Assign(AssignTaskCommand command)
         {
-            return await httpClient.PutJsonAsync<AssignTaskCommandResult>($"tasktodo/{command.Id}/{command.AssignedToId}", command);       //$"tasktodo/{command.Id}&{command.AssignedToId}"
+            return await httpClient.PutJsonAsync<AssignTaskCommandResult>($"tasktodo/{command.Id}/{command.AssignedToId}", command);
         }
 
-        private async Task<CompleteTaskCommandResult> Complete(CompleteTaskCommand command)
+        private async Task<CompleteTaskCommandResult> CompleteTask(CompleteTaskCommand command)
         {
             return await httpClient.PutJsonAsync<CompleteTaskCommandResult>($"tasktodo/{command.Id}/{command.IsComplete}", command);
         }
@@ -211,7 +211,7 @@ namespace WebClient.Services
         {
             isOperationSuccessful = false;
 
-            var result = await Complete(model.ToCompleteTaskCommand());
+            var result = await CompleteTask(model.ToCompleteTaskCommand());
 
             Console.WriteLine(JsonSerializer.Serialize(result));
 

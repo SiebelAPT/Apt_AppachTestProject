@@ -10,6 +10,7 @@ using Domain.ViewModel;
 using Domain.ClientSideModels;
 using WebClient.Abstractions;
 using WebClient.Shared.Models;
+using WebClient.Pages;
 using Core.Extensions.ModelConversion;
 
 namespace WebClient.Shared.Components
@@ -37,12 +38,17 @@ namespace WebClient.Shared.Components
         [Parameter]
         public EventCallback<MouseEventArgs> OnShowAllTaskClicked { get; set; }
 
+        [Parameter]
+        public MemberVm memberModel { get; set; }
+
         #endregion
+
+        string dropClass = "";
 
         protected override Task OnInitializedAsync()
         {
             menuItems = memberDataService.Members.ToMenuItems();
-
+            
             memberDataService.MembersChanged += MemberService_MembersChanged;
             memberDataService.SelectedMemberChanged += MemberService_SelectedMemberChanged;
 
@@ -58,17 +64,20 @@ namespace WebClient.Shared.Components
 
         protected async Task ShowAllTaskClicked(MouseEventArgs e)
         {
-            await OnShowAllTaskClicked.InvokeAsync(e);
+            memberDataService.SelectedMember = new MemberVm();
+            menuItems = memberDataService.Members.ToMenuItems();
+
+            await OnShowAllTaskClicked.InvokeAsync(e);            
         }
 
-        private void MemberService_SelectedMemberChanged(object sender, EventArgs e)
+        protected void MemberService_SelectedMemberChanged(object sender, EventArgs e)
         {
             InactivateAllItems();
             if (memberDataService.SelectedMember != null) SetActiveItem(memberDataService.SelectedMember.Id);
             StateHasChanged();
         }
 
-        private void MemberService_MembersChanged(object sender, EventArgs e)
+        protected void MemberService_MembersChanged(object sender, EventArgs e)
         {
             menuItems = memberDataService.Members.ToMenuItems();
 
@@ -79,6 +88,46 @@ namespace WebClient.Shared.Components
             ShowAllTaskClicked(evnt);
 
             StateHasChanged();
+        }
+
+        protected void HandleDragEnter(Domain.ClientSideModels.MenuItem selectedMemItem)
+        {
+            if (memberDataService != null && memberDataService.Members != null && memberDataService.Members.Count() > 0)
+            {
+                memberDataService.SelectedMember = memberDataService.Members.Where(mem => mem.Id == selectedMemItem.referenceId).FirstOrDefault() ?? new MemberVm();
+
+                if (TaskToDo.parentContainer != null) TaskToDo.parentContainer.memberDataService.SelectedMember = memberDataService.Members.Where(mem => mem.Id == selectedMemItem.referenceId).FirstOrDefault() ?? new MemberVm();
+                dropClass = TaskToDo.parentContainer.memberDataService.SelectedMember.FirstName + " " + TaskToDo.parentContainer.memberDataService.SelectedMember.LastName;
+                Console.WriteLine(dropClass);
+            }
+        }
+
+        protected void HandleDragLeave()
+        {
+            dropClass = "";
+        }
+
+        protected async Task HandleDrop()
+        {
+            dropClass = "";
+            taskDataService.SelectedTask.AssignedToId = memberDataService.SelectedMember.Id;
+
+            foreach (TaskVm tsk in taskDataService.EnumTasksToDo)
+            {
+                if (tsk.Id == taskDataService.SelectedTask.Id)
+                {
+                    tsk.AssignedToId = memberDataService.SelectedMember.Id;
+                    break;
+                }
+            }            
+
+            dropClass = taskDataService.SelectedTask.AssignedToId.ToString();
+            Console.WriteLine(dropClass);
+            Console.WriteLine("Left Menu Task Service Assigned ID Printed");
+
+            MouseEventArgs evnt = new MouseEventArgs();
+            evnt.Button = 0;
+            await OnShowAllTaskClicked.InvokeAsync(evnt);
         }
 
         #endregion

@@ -16,7 +16,7 @@ namespace WebClient.Pages
 {
     public class TasksBase: ComponentBase
     {
-        #region Protected Variables
+        #region Protected and Public Variables
 
         protected bool isFirstRender;
         protected bool showTasks;
@@ -26,19 +26,21 @@ namespace WebClient.Pages
         protected bool isTaskListerShow { get; set; }
         protected TaskVm taskViewModel;
         protected TaskToDoModel[] familyTasksToDo { get; set; }
+        public TaskVm Payload { get; set; }
+        public static TaskToDo parentContainer { get; set; }
 
         #endregion
 
         #region Define Parameters
 
         [Parameter]
-        public List<TaskVm> LoadedTasks { get; set; }
+        public List<TaskVm> loadedTasks { get; set; }
 
         [Parameter]
-        public MemberVm SelectedMember { get; set; }
+        public MemberVm selectedMember { get; set; }
 
         [Parameter]
-        public TaskVm SelectedTask { get; set; }
+        public TaskVm selectedTask { get; set; }
 
         [Inject]
         public ITaskDataService taskDataService { get; set; }
@@ -52,6 +54,9 @@ namespace WebClient.Pages
         {
             familyTasksToDo = new TaskToDoModel[0];
             taskViewModel = taskDataService.SelectedTask ?? new TaskVm();
+            parentContainer = new TaskToDo();
+            parentContainer.taskDataService = taskDataService;
+            parentContainer.memberDataService = memberDataService;
 
             UpdateTasks();
             
@@ -75,10 +80,11 @@ namespace WebClient.Pages
             isTaskListerShow = true;
 
             taskViewModel = taskDataService.SelectedTask ?? new TaskVm();
+
+            UpdateTasks();
+
             familyTasksToDo = taskDataService.PopulateLoadedTasks(taskDataService.EnumTasksToDo.ToList(), memberDataService.SelectedMember, memberDataService);
             
-            UpdateTasks();
-                        
             StateHasChanged();
         }
 
@@ -111,15 +117,15 @@ namespace WebClient.Pages
 
             if (result.Any())
             {
-                LoadedTasks = result.ToList();
+                loadedTasks = result.ToList();
             }            
         }
 
         protected void LeftMenuAllTaskButtonClicked()
         {
-            if (LoadedTasks == null || LoadedTasks.Count <= 0) UpdateTasks();
+            UpdateTasks();
 
-            familyTasksToDo = taskDataService.PopulateLoadedTasks(LoadedTasks, memberDataService.SelectedMember, memberDataService);
+            familyTasksToDo = taskDataService.PopulateLoadedTasks(loadedTasks, memberDataService.SelectedMember, memberDataService);
         }
 
         protected async void SaveCompleteTask()
@@ -128,7 +134,12 @@ namespace WebClient.Pages
 
             taskViewModel = taskDataService.SelectedTask;            
 
-            await taskDataService.CompleteTask(taskViewModel);            
+            if (taskViewModel.AssignedToId != Guid.Empty)
+            {
+                await taskDataService.CompleteMemberTask(taskViewModel);
+            }
+            else
+                await taskDataService.CompleteTask(taskViewModel);            
         }
 
         #endregion

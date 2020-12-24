@@ -71,8 +71,6 @@ namespace Services
             var assigningTask = await _taskRepository.ByIdAsync(command.Id);
             assigningTask.AssignedToId = command.AssignedToId;
 
-            //_taskMapper.Map<AssignTaskCommand, TaskDm>(command, assigningTask);
-
             var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(assigningTask);
 
             if (affectedRecordsCount < 1) isSucceed = false;
@@ -89,8 +87,6 @@ namespace Services
 
             var complettedTask = await _taskRepository.ByIdAsync(command.Id);
             complettedTask.IsComplete = command.IsComplete;
-
-            //_taskMapper.Map<CompleteTaskCommand, TaskDm>(command, complettedTask);
 
             var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(complettedTask);
 
@@ -110,10 +106,6 @@ namespace Services
             var complettedTask = await _taskRepository.ByIdAsync(command.Id);
             complettedTask.AssignedToId = command.AssignedToId;
             complettedTask.IsComplete = command.IsComplete;
-
-            //var comlettedTask = await _taskRepository.UpdateAsync(task);
-
-            //_taskMapper.Map<CompleteMemberTaskCommand, TaskDm>(command, complettedTask);
 
             var affectedRecordsCount = await _taskRepository.UpdateRecordAsync(complettedTask);
 

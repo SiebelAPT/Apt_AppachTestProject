@@ -27,7 +27,7 @@ namespace WebClient.Services
 
         public IEnumerable<MemberVm> Members => members;
 
-        public MemberVm SelectedMember { get; private set; }
+        public MemberVm SelectedMember { get; set; }
 
         public event EventHandler MembersChanged;
         public event EventHandler<string> UpdateMemberFailed;

@@ -2,6 +2,8 @@
 @using WebClient.Shared.Models
 @using Domain.ViewModel
 @using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Components.Web;
+@using WebClient.Pages;
 
 @inject ITaskDataService taskDataService;
 @inject IMemberDataService memberDataService;
@@ -27,13 +29,22 @@
 
         .task-wrapper .task-item .save-icon {
             width: 25px;
-            /*height: 25px;
-            display: flex;
-            align-self: flex-start;*/
+            cursor:pointer;            
         }
 
     .task-item .fa {
         font-size: 20px;
+    }
+
+    .task-item .draggable {
+        border: 1px solid #bbb;
+        background-color: transparent;
+        width: inherit;
+        height: inherit;
+        left: inherit;
+        top: inherit;
+        padding: 1px;
+        z-index: 2;
     }
 
     .done-text {
@@ -62,9 +73,7 @@
 
         .save-icon {
             width: 25px;
-            /*display: flex;
-            align-self:inherit;
-            flex-wrap: wrap;*/
+            cursor: pointer;            
         }
     }
 
@@ -75,39 +84,32 @@
         }
     }
 </style>
-<stylesheet>
-
-</stylesheet>
-
-<div class="task-wrapper">
+<div class="task-wrapper" >    
     @if (paramFamilyTaskToDo != null && paramFamilyTaskToDo.Length > 0)
     {
         @foreach (var item in paramFamilyTaskToDo)
         {
-            <div class="task-item p-3 my-3 row m-0">
-                <div class="col-7 p-0">
+            <div class="task-item p-3 my-3 row m-0 draggable" style="border-color: #CC1778" draggable="true" @ondragstart="@(()=>HandleDragStart(item))">
+                <div class="col-7 p-0 d-flex justify-content-start" style="display:inline-block;color: #CC1778">
                     @if (item.Id != Guid.Empty)
                     {
-                        <Check TValue="bool" Checked="@item.IsComplete" CheckedChanged="@(val => ToggleTask(item))">
-                            <span class="@(item.IsComplete ? "done-text" : "")">@item.Subject</span>
+                        <Check TValue="bool" Checked="@item.IsComplete" CheckedChanged="@(val => ToggleTask(item))" Style="vertical-align: top">
+                            <span class="@(item.IsComplete ? "done-text" : "")" >@item.Subject</span>
                         </Check>
                     }
                     else
                     {
-                        <span class="@(item.IsComplete ? "done-text" : "")" style="color: @alertAvatar;">@item.Subject</span>
+                        <span class="@(item.IsComplete ? "done-text" : "")" style="color: @alertAvatar;" >@item.Subject</span>
                     }
                 </div>
-                <div class="col-5 p-0 d-flex d-flex align-items-center justify-content-end ">
-                    <!-- -->
-                    <div class="avtar mr-1 col-1" style="background-color: @item.Avatar;"></div>
+                <div class="col-5 p-0 d-flex align-items-center justify-content-end" style="display:inline-block">
                     @if (item.Id != Guid.Empty)
                     {
-                        <div class="mr-1 col-2 d-flex">
-                            <button class="btn btn-default" style="height: 25px;width: 25px;" @onclick="@(e => SaveCompleteTaskClicked(e))">
-                                <img class="save-icon" style="margin-right: 20px; margin-bottom: 20px" src="/assets/images/save-regular.svg" />                                
-                            </button>
+                        <div class="avtar mr-1 col-1 d-flex" style="background-color: @item.Avatar;"></div>
+                        <div class="mr-1 col-3 d-flex justify-content-end" >
+                            <img class="save-icon" src="/assets/images/save-regular.svg" @onclick="@(e => SaveCompleteTaskClicked(e))" />
                         </div>
-                        <div class="mr-1 col-2">
+                        <div class="mr-1 col-1 d-flex">
                             <img class="delete-icon" src="/assets/images/delete-icon.svg" />
                         </div>
                     }
@@ -140,10 +142,12 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnSaveCompleteTaskClicked { get; set; }
 
+    [Parameter]
+    public TaskVm taskModel { get; set; }
+
     private const string noAssociatedTaskText = "No task found associated with the selected member";
     private const string noTaskFound = "No task were Found";
     private const string alertAvatar = "Red";
-    private TaskVm taskModel;
     private bool isFirstRender;
 
     #endregion
@@ -175,13 +179,28 @@
 
     private void TaskDataService_SeletedTaskChanged(object sender, EventArgs e)
     {
-        taskModel = taskDataService.SelectedTask ?? new TaskVm();
-        //StateHasChanged();
+        taskModel = taskDataService.SelectedTask ?? new TaskVm();        
     }
 
     protected async Task SaveCompleteTaskClicked(MouseEventArgs e)
     {
         await OnSaveCompleteTaskClicked.InvokeAsync(e);
+    }
+
+    protected void HandleDragStart(TaskToDoModel selectedModel)
+    {
+        //Implement This in case an assigned task can't be re-assaigned
+        //if (selectedModel.AssignedToId != Guid.Empty) return;
+
+        if (taskModel == null) taskModel = new TaskVm();
+
+        taskModel.Id = selectedModel.Id;
+        taskModel.Subject = selectedModel.Subject;
+        taskModel.IsComplete = selectedModel.IsComplete;
+        taskModel.AssignedToId = selectedModel.AssignedToId;
+
+        taskDataService.SelectedTask = taskModel ?? new TaskVm();
+        taskDataService.EnumTasksToDo.Where(c => c.Id == taskModel.Id).Select(tsk => tsk.AssignedToId = taskModel.AssignedToId);
     }
 
     #endregion
@@ -192,7 +211,6 @@
     {
         taskDataService.ToggleTask(model.Id);
         taskModel = taskDataService.SelectedTask ?? new TaskVm();
-        //StateHasChanged();
     }
 
     private void LoadMemberWiseTasks(MemberVm selectedMember)

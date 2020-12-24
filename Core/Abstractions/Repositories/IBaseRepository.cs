@@ -18,15 +18,6 @@ namespace Core.Abstractions.Repositories
         /// <returns><see cref="TEntity"/></returns>
         Task<TEntity> ByIdAsync(TIdentifier id, CancellationToken cancellationToken = default);
 
-        ///// <summary>
-        ///// Get the record that has a matching Key.
-        ///// </summary>
-        ///// <param name="id">The key to search for.</param>
-        ///// <param name="foreignKeyid">The foreign fey to jointly search for.</param>
-        ///// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        ///// <returns><see cref="TEntity"/></returns>
-        //Task<TEntity> ByIdFreignKeyIdAsync(TIdentifier id, TIdentifier foreignKeyid, CancellationToken cancellationToken = default);
-                
         /// <summary>
         /// Will return a single object, and throw ans exception if
         /// there is more than one record returned.
@@ -45,15 +36,6 @@ namespace Core.Abstractions.Repositories
         /// </summary>
         /// <returns><see cref="IBaseRepository{TIdentifier, TEntity, TRepository}"/></returns>
         TRepository NoTrack();
-
-        ///// <summary>
-        /// Update the record that has matching Keys.
-        /// </summary>
-        /// <param name="id">The key to match for.</param>
-        /// <param name="foreignKeyid">The foreign fey to jointly match for.</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        /// <returns><see cref="TEntity"/></returns>
-        //Task<TEntity> AssaignTaskAsync(TIdentifier id, TIdentifier foreignKeyid, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Create a new record of type <see cref="TEntity"/>
@@ -78,26 +60,6 @@ namespace Core.Abstractions.Repositories
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns>Number of records changed.</returns>
         Task<TEntity> UpdateAsync(TEntity record, CancellationToken cancellationToken = default);
-
-        ///// <summary>
-        /// Update the record that has a matching Key.
-        /// </summary>
-        /// <param name="id">The key to match for.</param>
-        /// <param name="foreignKeyid">The foreign fey to jointly match for.</param>
-        /// <param name="isComplete">The boolean true/false value to mark record complete/incomplete.</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        /// <returns><see cref="TEntity"/></returns>
-        //Task<TEntity> UpdateTaskCompleteByIdFreignKeyIdAsync(TIdentifier id, TIdentifier foreignKeyid, Boolean isComplete, CancellationToken cancellationToken = default);
-
-        ///// <summary>
-        
-        /// Update the record that has a matching Key.
-        /// </summary>
-        /// <param name="id">The key to match for.</param>
-        /// <param name="isComplete">The boolean true/false value to mark record complete/incomplete.</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        /// <returns><see cref="TEntity"/></returns>
-        //Task<TEntity> UpdateTaskCompleteByIdAsync(TIdentifier id, Boolean isComplete, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete record of type <see cref="TEntity"/>

@@ -1,5 +1,5 @@
 @inherits LeftMenuBase
-@*@using Core.Extensions.ModelConversion*@
+@using WebClient.Pages
 
 @namespace WebClient.Shared.Components
 
@@ -73,7 +73,8 @@
     }
 </style>
 
-<div class="menu-wrapper col-12 p-0">
+<div class="menu-wrapper col-12 p-0 dropzone">
+
     @if (showAllTaskButton)
     {
         <div class="add-menu-item label col-10 offset-1 p-3 my-4 p-sm-2" @onclick="@(e => ShowAllTaskClicked(e))">
@@ -85,7 +86,10 @@
     {
         @foreach (var item in menuItems)
         {
-            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
+            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))"
+                 ondragover="event.preventDefault()" ondragstart="event.dataTransfer.setData('', event.target.id);"
+                 ondragend="event.dataTransfer.setData('', event.target.id);"
+                 @ondrop="HandleDrop" @ondragenter="@(()=>HandleDragEnter(item))" @ondragleave="HandleDragLeave">
                 @if (item.iconColor != null)
                 {
                     <div class="avtar mr-3" style="background-color: @(item.iconColor);"> </div>

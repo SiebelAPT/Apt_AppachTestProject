@@ -11,7 +11,7 @@ namespace WebClient.Abstractions
     public interface IMemberDataService
     {
         IEnumerable<MemberVm> Members { get; }
-        MemberVm SelectedMember { get; }
+        MemberVm SelectedMember { get; set; }
 
         event EventHandler MembersChanged;
         event EventHandler SelectedMemberChanged;

@@ -12,7 +12,7 @@ namespace WebClient.Abstractions
     public interface ITaskDataService
     {
         IEnumerable<TaskVm> EnumTasksToDo { get; }
-        TaskVm SelectedTask { get; }
+        TaskVm SelectedTask { get; set; }
 
         event EventHandler TasksChanged;
         event EventHandler TaskSelected;

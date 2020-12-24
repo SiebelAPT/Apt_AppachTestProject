@@ -58,7 +58,6 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{taskId:Guid}/{assignToId:Guid}")]
-        //[Route("AssignTask")]
         [ProducesResponseType(typeof(AssignTaskCommandResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> AssignTask(Guid taskId, Guid assignToId, AssignTaskCommand command)
         {
@@ -80,7 +79,6 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{completeTaskId:Guid}/{isComplete:bool}")]
-        //[Route("CompleteTask")]
         [ProducesResponseType(typeof(CompleteTaskCommandResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> CompleteTask(Guid completeTaskId, bool isComplete, CompleteTaskCommand command)
         {

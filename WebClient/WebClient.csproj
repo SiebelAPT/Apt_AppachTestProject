@@ -6,8 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="blazor-dragdrop" Version="1.1.5" />
         <PackageReference Include="Blazorise.Bootstrap" Version="0.9.1.2" />
         <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.1.2" />
+        <PackageReference Include="dropzone" Version="4.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
@@ -44,6 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Remove="Components\DragTestTaskCreatorComponent.razor" />
       <Content Remove="Pages\ManageTasks.razor" />
     </ItemGroup>
 
