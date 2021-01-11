@@ -24,9 +24,17 @@ namespace WebApi
             services.AddMvc().AddFluentValidation(fv =>
                 fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+            IConfigurationRoot config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
             services.AddDbContext<DataLayer.FamilyTaskContext>(options =>
             {
-                options.UseSqlServer(configuration.GetSection("ConnectionStrings:SqlDb").Value);
+                //var ConnString = configuration.GetSection("ConnectionStrings:SqlDb").Value;
+                //options.UseSqlServer(configuration.GetSection("ConnectionStrings:SqlDb").Value);
+                var ConnString = config.GetSection("ConnectionStrings")["SqlDb"];                
+                options.UseSqlServer(ConnString);
             });
 
             services.AddCors(options =>

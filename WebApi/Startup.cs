@@ -30,7 +30,7 @@ namespace WebApi
             services.AddControllers();
 
             services.AddSupportingServices(Configuration);
-            
+
             services.AddDatalayer();
             services.AddServiceLayer();            
         }

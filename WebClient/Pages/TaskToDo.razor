@@ -3,7 +3,6 @@
 
 @namespace WebClient.Pages
 
-@using Blazor.DragDrop.Core;
 @using WebClient.Components
 @using WebClient.Shared.Components
 
@@ -19,11 +18,7 @@
 {    
 <div class="page-wrapper row m-0 col-12 p-0">
     <div class="col-4 p-0">
-        @*<Draggable>
-            <Dropzone>*@
-                <LeftMenu showAllTaskButton="isShowAllButton" OnShowAllTaskClicked="LeftMenuAllTaskButtonClicked"></LeftMenu>
-            @*</Dropzone>
-        </Draggable>*@        
+        <LeftMenu showAllTaskButton="isShowAllButton" OnShowAllTaskClicked="LeftMenuAllTaskButtonClicked"></LeftMenu>
     </div>
     <div class="col-8 p-0">
         <div class="col-10 header pb-1 d-flex justify-content-center"> Manage Family Tasks </div>
@@ -38,14 +33,10 @@
             </div>
         </div>
         <div class="col-10 offset-1 align-items-center">
-            @*<Draggable>
-                <Dropzone>*@
-                    @if (familyTasksToDo != null)
-                    {
-                        <TaskCreatorListerComponent paramFamilyTaskToDo="familyTasksToDo" OnSaveCompleteTaskClicked="SaveCompleteTask"></TaskCreatorListerComponent>
-                    }
-                @*</Dropzone>
-            </Draggable>*@           
+            @if (familyTasksToDo != null)
+            {
+                <TaskCreatorListerComponent paramFamilyTaskToDo="familyTasksToDo" OnSaveCompleteTaskClicked="SaveCompleteTask"></TaskCreatorListerComponent>
+            }
         </div>
     </div>
 </div>
